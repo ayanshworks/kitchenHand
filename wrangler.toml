@@ -1,0 +1,14 @@
+name = "kitchen-hand"
+main = "worker.js"
+compatibility_date = "2026-08-01"
+
+# The daily ask counts live here. Create it with:
+#   wrangler kv namespace create ASK_COUNTS
+# then paste the id it prints into the line below.
+[[kv_namespaces]]
+binding = "ASK_COUNTS"
+id = "PASTE_YOUR_KV_NAMESPACE_ID_HERE"
+
+# ANTHROPIC_API_KEY and ALLOWED_ORIGIN are secrets, not variables.
+# Set them with `wrangler secret put NAME` so they never sit in this file
+# or in your git history.

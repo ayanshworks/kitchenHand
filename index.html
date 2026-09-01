@@ -18,7 +18,7 @@
 </style>
 </head>
 <body>
-<!-- Kitchen Hand build 2026-08-30.4 -->
+<!-- Kitchen Hand build 2026-08-30.5 -->
 <div id="root"><div class="boot">Warming up the kitchen…</div></div>
 
 <script type="text/babel" data-type="module">
@@ -109,8 +109,18 @@ const store = {
   },
 };
 
+/* ------------------------------------------------------------------
+   SET THIS ONCE, then nobody ever sees the settings panel.
+   Paste your deployed worker URL between the quotes, e.g.
+     "https://kitchen-hand.yourname.workers.dev"
+   This is not a secret. It is a public address, the same as the address
+   of this page. What protects it is the rate limiting in the worker,
+   not hiding it. Your API key stays on Cloudflare either way.
+   ------------------------------------------------------------------ */
+const DEFAULT_ENDPOINT = "";
+
 function getEndpoint() {
-  try { return localStorage.getItem(NS + "endpoint") || ""; } catch { return ""; }
+  try { return localStorage.getItem(NS + "endpoint") || DEFAULT_ENDPOINT; } catch { return DEFAULT_ENDPOINT; }
 }
 function setEndpoint(url) {
   try { localStorage.setItem(NS + "endpoint", url.trim()); } catch {}
@@ -190,7 +200,7 @@ ${FORMAT}`;
 
   const endpoint = getEndpoint();
   if (!endpoint) {
-    throw new Error("No cooking service connected. Open settings and add your service address.");
+    throw new Error("This kitchen isn't connected to its service yet. If it's yours, set DEFAULT_ENDPOINT in index.html.");
   }
 
   const res = await fetch(endpoint, {
@@ -546,8 +556,9 @@ function Settings({ onClose }) {
       <div className="kh-panel" style={{ maxWidth: 460, width: "100%" }}>
         <h2>Cooking service</h2>
         <p>
-          The app sends your questions to a small service you run, which holds the API key.
-          Paste its address here. It is remembered on this device only.
+          {DEFAULT_ENDPOINT
+            ? "This app already knows where to send your questions. You only need this if you want to point it somewhere else."
+            : "The app sends your questions to a small service you run, which holds the API key. Paste its address here."}
         </p>
         <label className="kh-field">
           <span>Service address</span>
@@ -849,7 +860,7 @@ function KitchenHand() {
 }
 
 
-console.log("Kitchen Hand build 2026-08-30.4");
+console.log("Kitchen Hand build 2026-08-30.5");
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<KitchenHand />);
